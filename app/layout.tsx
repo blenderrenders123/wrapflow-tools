@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://wrapflow.site"),
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {children}
       </body>
+      <GoogleAnalytics gaId="G-HXVPZCR810" />
     </html>
   );
 }
