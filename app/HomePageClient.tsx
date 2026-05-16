@@ -147,14 +147,19 @@ export default function HomePageClient() {
             <span className="text-[15px] font-medium">WrapFlow<span className="text-zinc-400">.tools</span></span>
           </Link>
           <ul className="hidden items-center gap-8 md:flex">
-            {["Tools", "How", "FAQ"].map((item) => (
-              <li key={item}>
-                <a href={"#" + item.toLowerCase()} className="text-sm text-zinc-400 transition hover:text-white">
-                  {item === "How" ? "How it works" : item}
-                </a>
-              </li>
-            ))}
-          </ul>
+           {["Tools", "How", "FAQ"].map((item) => (
+            <li key={item}>
+              <a href={"#" + item.toLowerCase()} className="text-sm text-zinc-400 transition hover:text-white">
+              {item === "How" ? "How it works" : item}
+              </a>
+            </li>
+  ))}
+  <li>
+    <Link href="/contact" className="text-sm text-zinc-400 transition hover:text-white">
+      Contact
+    </Link>
+  </li>
+</ul>
           <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="rounded-full bg-gradient-to-br from-amber-400/60 via-cyan-400/30 to-violet-400/40 p-px">
             <a href="#tools" className="group inline-flex items-center gap-1.5 rounded-full bg-[#06060a]/85 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-xl">
               Launch tools <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -320,15 +325,19 @@ export default function HomePageClient() {
               </Link>
               <p className="mt-3 max-w-xs text-xs text-zinc-500">Precision calculators for wrap, tint, and PPF pros.</p>
             </div>
-            <nav>
-              <ul className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
-                {tools.map((t) => (
-                  <li key={t.slug}>
-                    <Link href={"/" + t.slug} className="inline-block text-zinc-400 transition hover:translate-x-0.5 hover:text-white">{t.title}</Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            
+              <nav>
+  <ul className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm">
+    {tools.map((t) => (
+      <li key={t.slug}>
+        <Link href={"/" + t.slug} className="inline-block text-zinc-400 transition hover:translate-x-0.5 hover:text-white">{t.title}</Link>
+      </li>
+    ))}
+    <li>
+      <Link href="/contact" className="inline-block text-zinc-400 transition hover:translate-x-0.5 hover:text-white">Contact</Link>
+    </li>
+  </ul>
+</nav>
           </motion.div>
           <motion.div variants={fadeUp} className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/5 pt-6 text-xs text-zinc-500 sm:flex-row sm:items-center">
             <p>© 2026 WrapFlow.tools — All rights reserved.</p>
