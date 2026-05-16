@@ -3,78 +3,151 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowLeft, Ruler, Sparkles, Info, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Ruler, Sparkles, Download, Copy } from "lucide-react";
+import jsPDF from "jspdf";
 
-type Preset = { name: string; desc: string; values: { wheelWidth: number; offset: number; wheelDiameter: number; tireWidth: number; tireAspect: number; fenderClearance: number } };
+const presets = {
+  stockM3: { wheelWidth: 8, offset: 35, diameter: 18, tireWidth: 245, aspect: 40, clearance: 25, label: "Stock M3" },
+  flush: { wheelWidth: 9.5, offset: 22, diameter: 19, tireWidth: 255, aspect: 35, clearance: 15, label: "Flush / Stanced" },
+  wide: { wheelWidth: 10.5, offset: 12, diameter: 19, tireWidth: 285, aspect: 30, clearance: 8, label: "Wide Body" },
+};
 
-const presets: Preset[] = [
-  { name: "Stock M3", desc: "Factory BMW M3 setup", values: { wheelWidth: 8.5, offset: 40, wheelDiameter: 18, tireWidth: 245, tireAspect: 40, fenderClearance: 35 } },
-  { name: "Flush / Stanced", desc: "Aggressive but legal", values: { wheelWidth: 9.5, offset: 22, wheelDiameter: 19, tireWidth: 255, tireAspect: 35, fenderClearance: 25 } },
-  { name: "Wide Body", desc: "Track / show car", values: { wheelWidth: 11, offset: 5, wheelDiameter: 19, tireWidth: 285, tireAspect: 30, fenderClearance: 45 } },
-];
+function fitmentStatus(poke: number, clearance: number) {
+  const buffer = clearance - poke;
+  if (buffer < 0) return { label: "EXTREME POKE", color: "text-red-400", bg: "bg-red-500/15", border: "border-red-400/40", desc: "Wheels rub. Re-spec needed." };
+  if (buffer < 5) return { label: "AGGRESSIVE POKE", color: "text-orange-300", bg: "bg-orange-500/15", border: "border-orange-400/40", desc: "Tight tolerance. Might rub under load." };
+  if (buffer < 15) return { label: "FLUSH", color: "text-cyan-300", bg: "bg-cyan-500/15", border: "border-cyan-400/40", desc: "Clean stance. Good for street." };
+  if (buffer < 25) return { label: "MILD TUCK", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-400/40", desc: "Safe fitment. Daily-friendly." };
+  return { label: "DEEP TUCK", color: "text-zinc-400", bg: "bg-zinc-500/15", border: "border-zinc-400/40", desc: "Conservative. Lots of room." };
+}
 
 export default function WheelFitmentCalculator() {
-  const [wheelWidth, setWheelWidth] = useState(9);
+  const [wheelWidth, setWheelWidth] = useState(8);
   const [offset, setOffset] = useState(35);
-  const [tireWidth, setTireWidth] = useState(255);
-  const [tireAspect, setTireAspect] = useState(35);
-  const [wheelDiameter, setWheelDiameter] = useState(19);
-  const [fenderClearance, setFenderClearance] = useState(20);
-
-  const applyPreset = (p: Preset) => {
-    setWheelWidth(p.values.wheelWidth);
-    setOffset(p.values.offset);
-    setWheelDiameter(p.values.wheelDiameter);
-    setTireWidth(p.values.tireWidth);
-    setTireAspect(p.values.tireAspect);
-    setFenderClearance(p.values.fenderClearance);
-  };
+  const [diameter, setDiameter] = useState(18);
+  const [tireWidth, setTireWidth] = useState(245);
+  const [aspect, setAspect] = useState(40);
+  const [clearance, setClearance] = useState(25);
+  const [copied, setCopied] = useState(false);
 
   const calc = useMemo(() => {
-    const wheelWidthMm = wheelWidth * 25.4;
-    const backspacing = (wheelWidthMm / 2 + offset) / 25.4 + 0.5;
-    const poke = wheelWidthMm / 2 - offset;
-    const tireSidewall = (tireWidth * tireAspect) / 100;
-    const overallDiameterIn = (wheelDiameter * 25.4 + tireSidewall * 2) / 25.4;
+    const wheelWidthMM = wheelWidth * 25.4;
+    const backspacing = (wheelWidthMM / 2 + offset) / 25.4;
+    const poke = Math.max(0, (wheelWidthMM / 2 - offset) - clearance);
+    const status = fitmentStatus(poke, clearance);
+    const tireDiameter = diameter * 25.4 + 2 * (tireWidth * aspect / 100);
+    return { wheelWidthMM: wheelWidthMM.toFixed(0), backspacing: backspacing.toFixed(2), poke: poke.toFixed(1), tireDiameter: (tireDiameter / 25.4).toFixed(1), status };
+  }, [wheelWidth, offset, clearance, diameter, tireWidth, aspect]);
 
-    let status: "tucked" | "flush" | "poke" | "extreme" = "flush";
-    let statusDesc = "";
-    if (poke < -5) {
-      status = "tucked";
-      statusDesc = "Wheel sits inside the fender. Conservative, lots of clearance.";
-    } else if (poke <= 10) {
-      status = "flush";
-      statusDesc = "Wheel sits even with the fender. The clean OEM-plus look.";
-    } else if (poke <= fenderClearance) {
-      status = "poke";
-      statusDesc = "Wheel pokes past the fender slightly. Aggressive but should clear.";
-    } else {
-      status = "extreme";
-      statusDesc = "Wheel extends well past the fender. Will rub without modification.";
-    }
+  const loadPreset = (preset: keyof typeof presets) => {
+    const p = presets[preset];
+    setWheelWidth(p.wheelWidth); setOffset(p.offset); setDiameter(p.diameter);
+    setTireWidth(p.tireWidth); setAspect(p.aspect); setClearance(p.clearance);
+  };
 
-    let warning = "";
-    if (poke > fenderClearance) warning = "Wheel will hit fender. Needs rolling, spacers removed, or wider fenders.";
-    else if (Math.abs(tireWidth - wheelWidthMm) > 30) warning = "Stretched tire. Tire is much narrower than rim. Check sidewall safety.";
+  const specText = `WHEEL FITMENT SPEC\n\nWheel: ${diameter}x${wheelWidth} ET${offset}\nTire: ${tireWidth}/${aspect}R${diameter}\nBackspacing: ${calc.backspacing}"\nFender clearance: ${clearance}mm\n\nStatus: ${calc.status.label}\n${calc.status.desc}`;
 
-    return {
-      backspacing: backspacing.toFixed(2),
-      poke: poke.toFixed(0),
-      sidewall: tireSidewall.toFixed(0),
-      overallDiameter: overallDiameterIn.toFixed(2),
-      status,
-      statusDesc,
-      warning,
-    };
-  }, [wheelWidth, offset, tireWidth, tireAspect, wheelDiameter, fenderClearance]);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(specText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-  const svgScale = 0.5;
-  const wheelMmHalf = (wheelWidth * 25.4) / 2;
-  const hubX = 200;
-  const fenderX = hubX + fenderClearance * svgScale;
-  const outerEdgeX = hubX + (wheelMmHalf - offset) * svgScale;
-  const wheelDiameterPx = wheelDiameter * 25.4 * svgScale * 0.35;
-  const tireDiameterPx = Number(calc.overallDiameter) * 25.4 * svgScale * 0.35;
+  const handlePDF = () => {
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const W = 210;
+    const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    const specNum = "FIT-" + Date.now().toString().slice(-6);
+
+    // Header band
+    doc.setFillColor(10, 10, 18); doc.rect(0, 0, W, 36, "F");
+    doc.setFillColor(34, 211, 238); doc.rect(0, 36, W, 1.2, "F");
+    doc.setTextColor(255, 255, 255); doc.setFontSize(20); doc.setFont("helvetica", "bold");
+    doc.text("WrapFlow.tools", 15, 16);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal");
+    doc.setTextColor(180, 180, 200);
+    doc.text("WHEEL FITMENT SPEC SHEET", 15, 24);
+    doc.setFontSize(8); doc.setTextColor(34, 211, 238);
+    doc.text(specNum, W - 15, 16, { align: "right" });
+    doc.setTextColor(180, 180, 200);
+    doc.text(date, W - 15, 22, { align: "right" });
+
+    // Title
+    let y = 52;
+    doc.setTextColor(20, 20, 30); doc.setFontSize(16); doc.setFont("helvetica", "bold");
+    doc.text("Fitment Analysis", 15, y);
+    y += 8;
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120);
+    doc.text("Wheel and tire spec breakdown with clearance analysis.", 15, y);
+    y += 12;
+
+    // Wheel spec block
+    doc.setFillColor(248, 250, 252); doc.roundedRect(15, y, W - 30, 30, 2, 2, "F");
+    doc.setTextColor(34, 211, 238); doc.setFontSize(8); doc.setFont("helvetica", "bold");
+    doc.text("WHEEL SPEC", 20, y + 7);
+    doc.setTextColor(20, 20, 30); doc.setFontSize(22); doc.setFont("helvetica", "bold");
+    doc.text(`${diameter}" × ${wheelWidth}" ET${offset}`, 20, y + 20);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120);
+    doc.text(`Tire: ${tireWidth}/${aspect}R${diameter}`, 20, y + 27);
+    y += 38;
+
+    // Specs table
+    const rows: [string, string][] = [
+      ["Wheel diameter", `${diameter} in`],
+      ["Wheel width", `${wheelWidth} in (${calc.wheelWidthMM} mm)`],
+      ["Offset (ET)", `${offset} mm`],
+      ["Backspacing", `${calc.backspacing} in`],
+      ["Tire size", `${tireWidth}/${aspect}R${diameter}`],
+      ["Tire overall diameter", `${calc.tireDiameter} in`],
+      ["Fender clearance", `${clearance} mm`],
+      ["Calculated poke", `${calc.poke} mm`],
+    ];
+
+    doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.setTextColor(20, 20, 30);
+    doc.text("Specifications", 15, y); y += 6;
+    rows.forEach(([k, v]) => {
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(80, 80, 100);
+      doc.text(k, 18, y);
+      doc.setFont("helvetica", "bold"); doc.setTextColor(20, 20, 30);
+      doc.text(v, W - 18, y, { align: "right" });
+      doc.setDrawColor(220, 220, 230); doc.setLineDashPattern([0.5, 0.8], 0);
+      doc.line(18 + doc.getTextWidth(k) + 2, y - 0.8, W - 18 - doc.getTextWidth(v) - 2, y - 0.8);
+      y += 6;
+    });
+    y += 6;
+
+    // Status card
+    doc.setFillColor(34, 211, 238); doc.roundedRect(15, y, W - 30, 22, 2, 2, "F");
+    doc.setTextColor(10, 10, 18); doc.setFontSize(8); doc.setFont("helvetica", "bold");
+    doc.text("STATUS", 20, y + 7);
+    doc.setFontSize(14);
+    doc.text(calc.status.label, 20, y + 15);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal");
+    doc.text(calc.status.desc, W - 20, y + 13, { align: "right" });
+    y += 30;
+
+    // Notes
+    doc.setFontSize(9); doc.setFont("helvetica", "bold"); doc.setTextColor(20, 20, 30);
+    doc.text("Installer Notes", 15, y); y += 5;
+    doc.setFontSize(8); doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120);
+    const notes = [
+      "Always verify clearance with a physical test fitment before final order.",
+      "Suspension compression may reduce static clearance by 10-15mm.",
+      "Tire stretch affects effective wheel width and final fitment.",
+    ];
+    notes.forEach((n) => { doc.text("• " + n, 18, y); y += 5; });
+
+    // Footer
+    doc.setDrawColor(220, 220, 230); doc.setLineDashPattern([], 0); doc.line(15, 280, W - 15, 280);
+    doc.setTextColor(150, 150, 170); doc.setFontSize(8);
+    doc.text("Generated by WrapFlow.tools — wrapflow.site", 15, 286);
+    doc.text("Free precision tools for the wrap industry", W - 15, 286, { align: "right" });
+
+    doc.save(`fitment-spec-${specNum}.pdf`);
+  };
+
+  // Visual diagram math
+  const visualPoke = (wheelWidth * 25.4 / 2 - offset);
 
   return (
     <main className="relative min-h-screen bg-[#06060a] text-zinc-100">
@@ -101,189 +174,123 @@ export default function WheelFitmentCalculator() {
       <section className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-10 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/5 px-3 py-1 text-xs text-cyan-300 backdrop-blur-xl">
-            <Sparkles className="h-3 w-3" />
-            Fitment
+            <Sparkles className="h-3 w-3" /> Fitment
           </div>
           <h1 className="text-4xl font-medium tracking-tight text-white sm:text-5xl">
             Wheel Fitment <span className="bg-gradient-to-r from-cyan-200 via-cyan-400 to-cyan-600 bg-clip-text text-transparent">Calculator</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-zinc-400 sm:text-base">
-            Check if a wheel will fit your car before you buy. See poke, backspacing, and clearance issues in real time.
+          <p className="mx-auto mt-4 max-w-xl text-sm text-zinc-400 sm:text-base">
+            Visualize offset, poke, and fender clearance before the wheels arrive.
           </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }} className="mb-6 flex flex-wrap items-center justify-center gap-2">
-          <span className="text-xs text-zinc-500">Try a preset:</span>
-          {presets.map((p) => (
-            <button key={p.name} onClick={() => applyPreset(p)} className="group rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-zinc-300 transition hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-200">
-              {p.name}
-              <span className="ml-1.5 text-zinc-500 group-hover:text-cyan-400/70">· {p.desc}</span>
+          <span className="text-xs text-zinc-500">Presets:</span>
+          {Object.entries(presets).map(([k, p]) => (
+            <button key={k} onClick={() => loadPreset(k as keyof typeof presets)} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-zinc-300 transition hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-200">
+              {p.label}
             </button>
           ))}
         </motion.div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          {/* Diagram + sliders */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl sm:p-8">
 
-            <SliderWithHelp label="Wheel Width" hint="How wide the rim is. Stock cars use 7 to 8.5 inches. Stanced builds use 9 to 11 inches." example="Stock = 8 in, aggressive = 10 in" value={wheelWidth} setValue={setWheelWidth} min={6} max={13} step={0.5} unit="in" />
-
-            <SliderWithHelp label="Offset (ET)" hint="Where the mounting face sits. HIGH = wheel tucks INWARD. LOW = wheel POKES OUTWARD. Negative = wheel sticks way out." example="Stock BMW = ET35 to 45, stanced = ET10 to 20" value={offset} setValue={setOffset} min={-30} max={60} step={1} unit="mm" />
-
-            <SliderWithHelp label="Wheel Diameter" hint="Rim size in inches. Bigger means lower profile tire required." example="Most cars: 17 to 19 in, trucks: 20 to 22 in" value={wheelDiameter} setValue={setWheelDiameter} min={15} max={24} step={1} unit="in" />
-
-            <SliderWithHelp label="Tire Width" hint="Tire width in mm (first number on tire sidewall: 255/35R19)." example="Sports car = 245 to 285 mm" value={tireWidth} setValue={setTireWidth} min={185} max={325} step={5} unit="mm" />
-
-            <SliderWithHelp label="Tire Aspect Ratio" hint="Sidewall height as percent of width. Lower means thinner sidewall and harsher ride." example="Sport = 30 to 40 percent, comfort = 50 to 60 percent" value={tireAspect} setValue={setTireAspect} min={25} max={70} step={5} unit="%" />
-
-            <SliderWithHelp label="Fender Clearance" hint="Available space between the hub and where the fender lip ends. Measure with a ruler from hub face outward." example="Stock car = 25 to 35 mm" value={fenderClearance} setValue={setFenderClearance} min={0} max={60} step={2} unit="mm" />
-
-            <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#04040a] p-4">
-              <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-cyan-300/80">Top-down view (looking down at the wheel)</p>
-              <svg viewBox="0 0 400 260" className="w-full">
-                <line x1={hubX} y1="20" x2={hubX} y2="240" stroke="rgba(34,211,238,0.5)" strokeWidth="1" strokeDasharray="3 3" />
-                <text x={hubX} y={14} fill="rgba(34,211,238,0.9)" fontSize="9" textAnchor="middle" fontWeight="bold">HUB CENTER</text>
-
-                <ellipse cx={hubX + (-offset) * svgScale} cy="130" rx={tireDiameterPx / 2} ry={tireDiameterPx / 2 + 10} fill="rgba(20,20,28,0.95)" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
-
-                <ellipse cx={hubX + (-offset) * svgScale} cy="130" rx={wheelDiameterPx / 2} ry={wheelDiameterPx / 2} fill="url(#wheelGrad)" stroke="rgba(34,211,238,0.6)" strokeWidth="1.5" />
-
-                <path d={`M ${fenderX} 50 Q ${fenderX + 25} 130 ${fenderX} 210`} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeDasharray="5 3" />
-                <text x={fenderX + 30} y={130} fill="rgba(255,255,255,0.5)" fontSize="9" fontWeight="bold">FENDER</text>
-
-                <line x1={outerEdgeX} y1="60" x2={outerEdgeX} y2="200" stroke="rgba(251,191,36,0.7)" strokeWidth="1" strokeDasharray="2 2" />
-                <text x={outerEdgeX} y={50} fill="rgba(251,191,36,0.9)" fontSize="8" textAnchor="middle">OUTER EDGE</text>
-
-                {Number(calc.poke) > fenderClearance && (
-                  <>
-                    <rect x={fenderX} y="65" width={outerEdgeX - fenderX} height="130" fill="rgba(239,68,68,0.18)" stroke="rgba(239,68,68,0.5)" strokeWidth="1" />
-                    <text x={(fenderX + outerEdgeX) / 2} y={55} fill="rgba(239,68,68,1)" fontSize="9" textAnchor="middle" fontWeight="bold">RUBBING ZONE</text>
-                  </>
-                )}
-
-                <line x1={hubX} y1="230" x2={outerEdgeX} y2="230" stroke="rgba(251,191,36,0.6)" strokeWidth="1" markerEnd="url(#arrow)" />
-                <text x={(hubX + outerEdgeX) / 2} y={245} fill="rgba(251,191,36,0.9)" fontSize="8" textAnchor="middle">Poke: {calc.poke}mm</text>
-
+            <div className="mb-6 rounded-xl bg-gradient-to-b from-zinc-900/40 to-zinc-900/80 p-4">
+              <svg viewBox="0 0 600 200" className="mx-auto w-full max-w-xl">
+                {/* Hub centerline */}
+                <line x1="300" y1="40" x2="300" y2="180" stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+                <text x="300" y="32" fill="rgba(255,255,255,0.5)" fontSize="9" textAnchor="middle">HUB CENTERLINE</text>
+                {/* Fender curve */}
+                <path d={`M ${300 + clearance * 3.5} 60 Q ${300 + clearance * 3.5 + 30} 110, ${300 + clearance * 3.5 + 50} 170`} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" />
+                <text x={300 + clearance * 3.5 + 60} y="100" fill="rgba(255,255,255,0.4)" fontSize="8">FENDER</text>
+                {/* Wheel */}
+                <rect x={300 - offset * 1.5} y="75" width={wheelWidth * 8} height="50" rx="3" fill="url(#wheelGrad)" stroke="rgba(34,211,238,0.6)" strokeWidth="1.5" />
                 <defs>
-                  <radialGradient id="wheelGrad" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#1e1e28" />
-                    <stop offset="70%" stopColor="#0a0a12" />
-                    <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.3" />
-                  </radialGradient>
-                  <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                    <path d="M0,0 L6,3 L0,6 Z" fill="rgba(251,191,36,0.8)" />
-                  </marker>
+                  <linearGradient id="wheelGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#155e75" />
+                    <stop offset="50%" stopColor="#22d3ee" />
+                    <stop offset="100%" stopColor="#155e75" />
+                  </linearGradient>
                 </defs>
+                {/* Outer wheel edge marker */}
+                <line x1={300 + (wheelWidth * 25.4 / 2 - offset) * 2} y1="65" x2={300 + (wheelWidth * 25.4 / 2 - offset) * 2} y2="135" stroke="#22d3ee" strokeWidth="1.5" />
+                <text x={300 + (wheelWidth * 25.4 / 2 - offset) * 2} y="58" fill="#22d3ee" fontSize="9" textAnchor="middle">OUTER EDGE</text>
+                {/* Rubbing zone */}
+                {visualPoke > clearance && (
+                  <rect x={300 + clearance * 3.5} y="75" width={Math.max(0, (visualPoke - clearance) * 3.5)} height="50" fill="rgba(239,68,68,0.4)" stroke="rgba(239,68,68,0.8)" strokeDasharray="3 3" />
+                )}
               </svg>
+            </div>
+
+            <div className="space-y-5">
+              <Slider label="Wheel width" value={wheelWidth} unit="in" min={6} max={13} step={0.5} onChange={setWheelWidth} hint="Common: 7-9 stock, 9-11 stanced, 11+ wide body" />
+              <Slider label="Offset (ET)" value={offset} unit="mm" min={-20} max={60} step={1} onChange={setOffset} hint="Lower = more poke. ET35 stock, ET20 flush, ET0 wide" />
+              <Slider label="Wheel diameter" value={diameter} unit="in" min={15} max={22} step={1} onChange={setDiameter} hint="Stock 17-18, sport 19, large 20+" />
+              <Slider label="Tire width" value={tireWidth} unit="mm" min={185} max={325} step={5} onChange={setTireWidth} hint="225-265 daily, 275+ aggressive" />
+              <Slider label="Tire aspect" value={aspect} unit="%" min={25} max={55} step={5} onChange={setAspect} hint="Lower = thinner sidewall. 35-45 typical" />
+              <Slider label="Fender clearance" value={clearance} unit="mm" min={0} max={50} step={1} onChange={setClearance} hint="How much room to the fender edge" />
             </div>
           </motion.div>
 
+          {/* Summary */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="h-fit rounded-2xl bg-gradient-to-br from-cyan-400/40 via-cyan-400/10 to-white/10 p-px lg:sticky lg:top-28">
             <div className="rounded-2xl bg-[#0a0a12]/80 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300/80">Fitment Result</p>
-
-              <motion.div key={calc.status} initial={{ scale: 0.95, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} className="mt-3 flex items-center gap-2">
-                {calc.status === "extreme" ? <AlertTriangle className="h-5 w-5 text-red-400" /> : <CheckCircle2 className="h-5 w-5 text-emerald-400" />}
-                <span className={
-                  "text-lg font-medium capitalize " +
-                  (calc.status === "flush" ? "text-emerald-300" :
-                   calc.status === "tucked" ? "text-cyan-300" :
-                   calc.status === "poke" ? "text-amber-300" :
-                   "text-red-300")
-                }>
-                  {calc.status === "extreme" ? "Will Not Fit" : calc.status}
-                </span>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300/80">Fitment</p>
+              <motion.div key={calc.status.label} className="mt-3 text-3xl font-medium tracking-tight text-white">
+                {diameter}×{wheelWidth} ET{offset}
               </motion.div>
+              <p className="mt-1 text-xs text-zinc-500">{tireWidth}/{aspect}R{diameter}</p>
 
-              <p className="mt-2 text-xs leading-relaxed text-zinc-400">{calc.statusDesc}</p>
-
-              {calc.warning && (
-                <div className="mt-3 flex gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-300">
-                  <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span>{calc.warning}</span>
-                </div>
-              )}
-
-              <div className="my-5 h-px bg-white/10" />
-
-              <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Measurements</p>
-
-              <div className="space-y-3 text-sm">
-                <Row label="Backspacing" hint="Hub to inner rim edge" value={calc.backspacing + " in"} />
-                <Row label="Poke" hint="How far wheel sticks past hub" value={calc.poke + " mm"} accent={Number(calc.poke) > fenderClearance} />
-                <Row label="Tire sidewall" hint="Tire height from rim to road" value={calc.sidewall + " mm"} />
-                <Row label="Overall diameter" hint="Full tire and wheel height" value={calc.overallDiameter + " in"} />
+              <div className={"mt-5 rounded-xl border p-3 " + calc.status.bg + " " + calc.status.border}>
+                <p className={"text-xs font-bold uppercase tracking-wider " + calc.status.color}>{calc.status.label}</p>
+                <p className="mt-1 text-xs text-zinc-300">{calc.status.desc}</p>
               </div>
 
               <div className="my-5 h-px bg-white/10" />
 
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Spec Summary</p>
-              <p className="rounded-lg border border-white/5 bg-white/[0.02] p-2.5 font-mono text-xs text-zinc-300">
-                {wheelDiameter}x{wheelWidth} ET{offset}<br />
-                {tireWidth}/{tireAspect}R{wheelDiameter}
-              </p>
+              <div className="space-y-3 text-sm">
+                <Row label="Backspacing" value={`${calc.backspacing}"`} />
+                <Row label="Poke" value={`${calc.poke} mm`} />
+                <Row label="Tire diameter" value={`${calc.tireDiameter}"`} />
+                <Row label="Clearance" value={`${clearance} mm`} />
+              </div>
 
-              <button
-                onClick={() => {
-                  const txt = "WHEEL FITMENT SPEC\n\nWheel: " + wheelDiameter + "x" + wheelWidth + " ET" + offset + "\nTire: " + tireWidth + "/" + tireAspect + "R" + wheelDiameter + "\n\nBackspacing: " + calc.backspacing + " in\nPoke: " + calc.poke + " mm\nOverall diameter: " + calc.overallDiameter + " in\n\nStatus: " + calc.status.toUpperCase() + "\n" + calc.statusDesc + (calc.warning ? "\n\nWARNING: " + calc.warning : "");
-                  navigator.clipboard.writeText(txt);
-                }}
-                className="mt-5 w-full rounded-full bg-gradient-to-b from-cyan-300 to-cyan-500 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:from-cyan-200 hover:to-cyan-400 active:scale-[0.98]"
-              >
-                Copy fitment spec
-              </button>
+              <div className="mt-5 space-y-2">
+                <button onClick={handlePDF} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-b from-cyan-300 to-cyan-500 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:from-cyan-200 hover:to-cyan-400 active:scale-[0.98]">
+                  <Download className="h-4 w-4" /> Download PDF
+                </button>
+                <button onClick={handleCopy} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
+                  <Copy className="h-4 w-4" /> {copied ? "Copied!" : "Copy as text"}
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mt-12 rounded-2xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl sm:p-8">
-          <div className="mb-5 flex items-center gap-2">
-            <Info className="h-4 w-4 text-cyan-400" />
-            <h3 className="text-lg font-medium text-white">Reading the diagram</h3>
-          </div>
-          <div className="grid gap-4 text-sm sm:grid-cols-3">
-            <div>
-              <p className="mb-1 font-medium text-cyan-300">Cyan dashed line</p>
-              <p className="text-xs leading-relaxed text-zinc-400">The hub centerline. Where the wheel bolts onto your car.</p>
-            </div>
-            <div>
-              <p className="mb-1 font-medium text-zinc-200">White dashed curve</p>
-              <p className="text-xs leading-relaxed text-zinc-400">Your car&apos;s fender. The body panel above the wheel.</p>
-            </div>
-            <div>
-              <p className="mb-1 font-medium text-red-300">Red zone</p>
-              <p className="text-xs leading-relaxed text-zinc-400">Where the wheel will physically rub the fender. Bad.</p>
-            </div>
-          </div>
-        </motion.div>
       </section>
     </main>
   );
 }
 
-function SliderWithHelp({ label, hint, example, value, setValue, min, max, step, unit }: { label: string; hint: string; example: string; value: number; setValue: (v: number) => void; min: number; max: number; step: number; unit: string }) {
+function Slider({ label, value, unit, min, max, step, onChange, hint }: { label: string; value: number; unit: string; min: number; max: number; step: number; onChange: (v: number) => void; hint: string }) {
   return (
-    <div className="mb-7">
-      <div className="flex items-center justify-between">
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wider text-zinc-300">{label}</span>
-        <span className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-sm font-medium text-cyan-300">
-          {value} {unit}
-        </span>
+        <span className="rounded-lg border border-white/10 bg-white/[0.04] px-2 py-0.5 text-sm font-medium text-cyan-200">{value} {unit}</span>
       </div>
-      <p className="mt-1 text-xs leading-relaxed text-zinc-500">{hint}</p>
-      <p className="text-[11px] italic text-zinc-600">{example}</p>
-      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => setValue(Number(e.target.value))} className="mt-2 w-full accent-cyan-400" />
+      <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} className="w-full accent-cyan-400" />
+      <p className="mt-1 text-[10px] text-zinc-500">{hint}</p>
     </div>
   );
 }
 
-function Row({ label, hint, value, accent }: { label: string; hint?: string; value: string; accent?: boolean }) {
+function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <div>
-        <div className="text-zinc-300">{label}</div>
-        {hint && <div className="text-xs text-zinc-500">{hint}</div>}
-      </div>
-      <div className={accent ? "font-medium text-red-300" : "font-medium text-white"}>{value}</div>
+      <span className="text-zinc-400">{label}</span>
+      <span className="font-medium text-white">{value}</span>
     </div>
   );
 }

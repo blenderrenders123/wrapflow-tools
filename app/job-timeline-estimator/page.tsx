@@ -3,14 +3,10 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowLeft, Clock, Sparkles, Plus, Trash2, Copy, Calendar } from "lucide-react";
+import { ArrowLeft, Clock, Sparkles, Plus, Trash2, Copy, Calendar, Download } from "lucide-react";
+import jsPDF from "jspdf";
 
-type Task = {
-  id: string;
-  name: string;
-  hours: number;
-  category: "prep" | "install" | "finish";
-};
+type Task = { id: string; name: string; hours: number; category: "prep" | "install" | "finish" };
 
 const taskPresets: Record<string, Task[]> = {
   fullWrap: [
@@ -51,11 +47,7 @@ const categoryColors = {
   finish: "from-emerald-400 to-emerald-600",
 };
 
-const categoryLabels = {
-  prep: "Prep",
-  install: "Install",
-  finish: "Finish",
-};
+const categoryLabels = { prep: "Prep", install: "Install", finish: "Finish" };
 
 export default function JobTimelineEstimator() {
   const [tasks, setTasks] = useState<Task[]>(taskPresets.fullWrap);
@@ -70,7 +62,6 @@ export default function JobTimelineEstimator() {
     const prepHours = tasks.filter((t) => t.category === "prep").reduce((s, t) => s + t.hours, 0);
     const installHours = tasks.filter((t) => t.category === "install").reduce((s, t) => s + t.hours, 0);
     const finishHours = tasks.filter((t) => t.category === "finish").reduce((s, t) => s + t.hours, 0);
-
     return {
       totalHours: totalHours.toFixed(1),
       adjustedHours: adjustedHours.toFixed(1),
@@ -90,13 +81,8 @@ export default function JobTimelineEstimator() {
     setTasks(tasks.map((t) => (t.id === id ? { ...t, [field]: value } : t)));
   };
 
-  const addTask = () => {
-    setTasks([...tasks, { id: Date.now().toString(), name: "New task", hours: 1, category: "install" }]);
-  };
-
-  const removeTask = (id: string) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
+  const addTask = () => setTasks([...tasks, { id: Date.now().toString(), name: "New task", hours: 1, category: "install" }]);
+  const removeTask = (id: string) => setTasks(tasks.filter((t) => t.id !== id));
 
   const handleCopy = () => {
     const txt = "JOB TIMELINE ESTIMATE\n\n" + tasks.map((t) => `[${categoryLabels[t.category]}] ${t.name}: ${t.hours}h`).join("\n") + `\n\nTotal hours: ${calc.totalHours}h\nWith ${techCount} tech(s) + ${bufferPct}% buffer: ${calc.adjustedHours}h\nEstimated work days: ${calc.workDays}`;
@@ -105,7 +91,92 @@ export default function JobTimelineEstimator() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // For Gantt-style timeline
+  const handlePDF = () => {
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const W = 210;
+    const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    const jobNum = "JOB-" + Date.now().toString().slice(-6);
+
+    // Header band
+    doc.setFillColor(10, 10, 18); doc.rect(0, 0, W, 36, "F");
+    doc.setFillColor(167, 139, 250); doc.rect(0, 36, W, 1.2, "F");
+    doc.setTextColor(255, 255, 255); doc.setFontSize(20); doc.setFont("helvetica", "bold");
+    doc.text("WrapFlow.tools", 15, 16);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal");
+    doc.setTextColor(180, 180, 200);
+    doc.text("JOB TIMELINE SCHEDULE", 15, 24);
+    doc.setFontSize(8); doc.setTextColor(167, 139, 250);
+    doc.text(jobNum, W - 15, 16, { align: "right" });
+    doc.setTextColor(180, 180, 200);
+    doc.text(date, W - 15, 22, { align: "right" });
+
+    // Title
+    let y = 52;
+    doc.setTextColor(20, 20, 30); doc.setFontSize(16); doc.setFont("helvetica", "bold");
+    doc.text("Work Schedule", 15, y);
+    y += 8;
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120);
+    doc.text("Phase-by-phase task list with estimated hours.", 15, y);
+    y += 12;
+
+    // Total summary block
+    doc.setFillColor(248, 250, 252); doc.roundedRect(15, y, W - 30, 30, 2, 2, "F");
+    doc.setTextColor(167, 139, 250); doc.setFontSize(8); doc.setFont("helvetica", "bold");
+    doc.text("ADJUSTED TOTAL", 20, y + 7);
+    doc.setTextColor(20, 20, 30); doc.setFontSize(22); doc.setFont("helvetica", "bold");
+    doc.text(`${calc.adjustedHours} hours`, 20, y + 20);
+    doc.setFontSize(9); doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120);
+    doc.text(`${techCount} tech${techCount > 1 ? "s" : ""} • ${bufferPct}% buffer • ≈ ${calc.workDays} work day${calc.workDays > 1 ? "s" : ""}`, 20, y + 27);
+    y += 38;
+
+    // Tasks grouped by phase
+    const phases: ("prep" | "install" | "finish")[] = ["prep", "install", "finish"];
+    const phaseColors: Record<string, [number, number, number]> = {
+      prep: [251, 191, 36], install: [34, 211, 238], finish: [52, 211, 153],
+    };
+
+    phases.forEach((phase) => {
+      const phaseTasks = tasks.filter((t) => t.category === phase);
+      if (phaseTasks.length === 0) return;
+      const phaseTotal = phaseTasks.reduce((s, t) => s + t.hours, 0).toFixed(1);
+      const [r, g, b] = phaseColors[phase];
+      doc.setFillColor(r, g, b); doc.rect(15, y, 3, 5, "F");
+      doc.setFontSize(10); doc.setFont("helvetica", "bold"); doc.setTextColor(20, 20, 30);
+      doc.text(`${categoryLabels[phase]} Phase`, 20, y + 4);
+      doc.setFont("helvetica", "normal"); doc.setTextColor(100, 100, 120); doc.setFontSize(9);
+      doc.text(`${phaseTotal}h`, W - 18, y + 4, { align: "right" });
+      y += 8;
+      phaseTasks.forEach((t) => {
+        if (y > 260) { doc.addPage(); y = 20; }
+        doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(80, 80, 100);
+        doc.text("• " + t.name, 22, y);
+        doc.setFont("helvetica", "bold"); doc.setTextColor(20, 20, 30);
+        doc.text(`${t.hours}h`, W - 18, y, { align: "right" });
+        y += 5;
+      });
+      y += 4;
+    });
+
+    if (y > 240) { doc.addPage(); y = 20; }
+
+    // Breakdown box
+    doc.setFillColor(167, 139, 250); doc.roundedRect(15, y, W - 30, 22, 2, 2, "F");
+    doc.setTextColor(255, 255, 255); doc.setFontSize(8); doc.setFont("helvetica", "bold");
+    doc.text("BREAKDOWN", 20, y + 7);
+    doc.setFontSize(11);
+    doc.text(`Raw: ${calc.totalHours}h`, 20, y + 15);
+    doc.text(`Buffer: +${calc.bufferAmount}h`, 80, y + 15);
+    doc.text(`Days: ${calc.workDays}`, 145, y + 15);
+
+    // Footer
+    doc.setDrawColor(220, 220, 230); doc.line(15, 280, W - 15, 280);
+    doc.setTextColor(150, 150, 170); doc.setFontSize(8);
+    doc.text("Generated by WrapFlow.tools — wrapflow.site", 15, 286);
+    doc.text("Free precision tools for the wrap industry", W - 15, 286, { align: "right" });
+
+    doc.save(`job-schedule-${jobNum}.pdf`);
+  };
+
   const maxHours = Math.max(...tasks.map((t) => t.hours), 1);
 
   return (
@@ -118,8 +189,7 @@ export default function JobTimelineEstimator() {
       <header className="sticky top-4 z-50 mx-4 lg:mx-8">
         <nav className="mx-auto flex max-w-6xl items-center justify-between rounded-full border border-white/10 bg-white/[0.04] px-6 py-3 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] backdrop-blur-2xl">
           <Link href="/" className="group flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white">
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            Back to tools
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" /> Back to tools
           </Link>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-200 via-violet-400 to-violet-600">
@@ -133,8 +203,7 @@ export default function JobTimelineEstimator() {
       <section className="mx-auto max-w-6xl px-6 py-16 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-10 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-400/5 px-3 py-1 text-xs text-violet-300 backdrop-blur-xl">
-            <Sparkles className="h-3 w-3" />
-            Planner
+            <Sparkles className="h-3 w-3" /> Planner
           </div>
           <h1 className="text-4xl font-medium tracking-tight text-white sm:text-5xl">
             Job Timeline <span className="bg-gradient-to-r from-violet-200 via-violet-400 to-violet-600 bg-clip-text text-transparent">Estimator</span>
@@ -144,7 +213,6 @@ export default function JobTimelineEstimator() {
           </p>
         </motion.div>
 
-        {/* Preset buttons */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }} className="mb-6 flex flex-wrap items-center justify-center gap-2">
           <span className="text-xs text-zinc-500">Load preset:</span>
           <button onClick={() => loadPreset("fullWrap")} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-zinc-300 transition hover:border-violet-400/40 hover:bg-violet-400/10 hover:text-violet-200">Full Wrap</button>
@@ -153,7 +221,6 @@ export default function JobTimelineEstimator() {
         </motion.div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-          {/* Timeline */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl sm:p-8">
 
             <div className="mb-4 flex items-center justify-between">
@@ -163,7 +230,6 @@ export default function JobTimelineEstimator() {
               </button>
             </div>
 
-            {/* Task list with timeline bars */}
             <div className="space-y-2">
               {tasks.map((task) => (
                 <div key={task.id} className="group rounded-xl border border-white/10 bg-white/[0.02] p-3 transition hover:bg-white/[0.04]">
@@ -179,74 +245,42 @@ export default function JobTimelineEstimator() {
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
-
-                  {/* Timeline bar */}
                   <div className="mt-2 ml-[92px] mr-[124px] h-1.5 overflow-hidden rounded-full bg-white/5">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(task.hours / maxHours) * 100}%` }}
-                      transition={{ duration: 0.4, ease: "easeOut" }}
-                      className={"h-full bg-gradient-to-r " + categoryColors[task.category]}
-                    />
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${(task.hours / maxHours) * 100}%` }} transition={{ duration: 0.4, ease: "easeOut" }} className={"h-full bg-gradient-to-r " + categoryColors[task.category]} />
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-3 grid grid-cols-[80px_1fr_80px_36px] gap-3 px-3 text-[10px] uppercase tracking-wider text-zinc-600">
-              <span>Phase</span>
-              <span>Task</span>
-              <span className="text-center">Hours</span>
-              <span></span>
-            </div>
-
-            {/* Legend */}
             <div className="mt-6 flex flex-wrap items-center gap-4 rounded-xl border border-white/5 bg-white/[0.02] p-3">
               <span className="text-[10px] uppercase tracking-wider text-zinc-500">Phases:</span>
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full bg-amber-400" />
-                <span className="text-xs text-zinc-400">Prep ({calc.prepHours}h)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full bg-cyan-400" />
-                <span className="text-xs text-zinc-400">Install ({calc.installHours}h)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-xs text-zinc-400">Finish ({calc.finishHours}h)</span>
-              </div>
+              <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-amber-400" /><span className="text-xs text-zinc-400">Prep ({calc.prepHours}h)</span></div>
+              <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-cyan-400" /><span className="text-xs text-zinc-400">Install ({calc.installHours}h)</span></div>
+              <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-emerald-400" /><span className="text-xs text-zinc-400">Finish ({calc.finishHours}h)</span></div>
             </div>
           </motion.div>
 
-          {/* Summary */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="h-fit rounded-2xl bg-gradient-to-br from-violet-400/40 via-violet-400/10 to-white/10 p-px lg:sticky lg:top-28">
             <div className="rounded-2xl bg-[#0a0a12]/80 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl">
-
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-violet-300/80">Estimated</p>
-
               <motion.div key={calc.adjustedHours} initial={{ scale: 0.95, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} className="mt-3 bg-gradient-to-r from-violet-200 via-violet-400 to-violet-500 bg-clip-text text-5xl font-medium tracking-tight text-transparent">
                 {calc.adjustedHours}h
               </motion.div>
               <p className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
-                <Calendar className="h-3 w-3" />
-                ≈ {calc.workDays} work {calc.workDays === 1 ? "day" : "days"}
+                <Calendar className="h-3 w-3" /> ≈ {calc.workDays} work {calc.workDays === 1 ? "day" : "days"}
               </p>
 
               <div className="my-5 h-px bg-white/10" />
 
-              {/* Tech count slider */}
               <div className="mb-5">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">Technicians</span>
                   <span className="rounded-lg border border-white/10 bg-white/[0.04] px-2 py-1 text-sm font-medium text-violet-300">{techCount}</span>
                 </div>
                 <input type="range" min={1} max={4} step={1} value={techCount} onChange={(e) => setTechCount(Number(e.target.value))} className="w-full accent-violet-400" />
-                <div className="mt-1 flex justify-between text-[10px] text-zinc-600">
-                  <span>Solo</span><span>2</span><span>3</span><span>Team</span>
-                </div>
+                <div className="mt-1 flex justify-between text-[10px] text-zinc-600"><span>Solo</span><span>2</span><span>3</span><span>Team</span></div>
               </div>
 
-              {/* Buffer slider */}
               <div className="mb-5">
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-xs font-medium uppercase tracking-wider text-zinc-400">Buffer time</span>
@@ -264,10 +298,14 @@ export default function JobTimelineEstimator() {
                 <Row label="Tasks" value={tasks.length.toString()} />
               </div>
 
-              <button onClick={handleCopy} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-b from-violet-300 to-violet-500 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:from-violet-200 hover:to-violet-400 active:scale-[0.98]">
-                <Copy className="h-4 w-4" />
-                {copied ? "Copied!" : "Copy schedule"}
-              </button>
+              <div className="mt-5 space-y-2">
+                <button onClick={handlePDF} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-b from-violet-300 to-violet-500 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:from-violet-200 hover:to-violet-400 active:scale-[0.98]">
+                  <Download className="h-4 w-4" /> Download PDF
+                </button>
+                <button onClick={handleCopy} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.08]">
+                  <Copy className="h-4 w-4" /> {copied ? "Copied!" : "Copy schedule"}
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
