@@ -71,7 +71,7 @@ const faqs = [
   { q: "Do you store my data?", a: "No. Everything happens locally in your browser. We don't have a database, servers for your data, or any tracking on calculations." },
   { q: "Can I use this on mobile or iPad?", a: "Yes. The site is fully responsive — works great on phones and tablets, which is perfect for use in the shop bay." },
   { q: "Are the calculations accurate?", a: "The math is solid, but estimates depend on your inputs. Always verify with a physical inspection for production quotes." },
-  { q: "Can you add a tool I need?", a: "Maybe. Email suggestions to feedback@wrapflow.site (coming soon). We're building based on real installer feedback." },
+  { q: "Can you add a tool I need?", a: "Yes — please tell us. Use the contact page to suggest tools. If 5 shops ask for the same thing, we'll build it next." },
   { q: "How do you make money if it's free?", a: "We don't yet. The plan is to add a Pro tier later with branded PDF exports and saved quotes. The free tools stay free forever." },
 ];
 
