@@ -11,32 +11,128 @@ export default function ContactPage() {
   const [topic, setTopic] = useState("feedback");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("loading");
-    setErrorMsg("");
+  e.preventDefault();
+  setStatus("loading");
+  setErrorMsg("");
 
-    const formData = new FormData(e.currentTarget);
-    formData.append("access_key", "539f1512-6f42-46cf-9fd3-d0bf311e86c6");
-    formData.append("subject", `WrapFlow [${topic}]: ${formData.get("name")}`);
-
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setStatus("success");
-        (e.target as HTMLFormElement).reset();
-      } else {
-        setStatus("error");
-        setErrorMsg(data.message || "Something went wrong");
-      }
-    } catch {
-      setStatus("error");
-      setErrorMsg("Network error. Please try again.");
-    }
+  const formData = new FormData(e.currentTarget);
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const shop = (formData.get("shop") as string) || "Not provided";
+  const message = formData.get("message") as string;
+  
+  const topicLabels: Record<string, string> = {
+    feedback: "💬 Feedback",
+    bug: "🐛 Bug Report",
+    "tool-request": "🛠️ Tool Request",
+    other: "📩 Other",
   };
+  const topicLabel = topicLabels[topic] || topic;
+
+  formData.append("access_key", "539f1512-6f42-46cf-9fd3-d0bf311e86c6");
+  formData.append("subject", `WrapFlow ${topicLabel} from ${name}`);
+  formData.append("from_name", "WrapFlow.tools");
+  
+  // Pretty HTML email template
+  const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body { margin:0; padding:0; background:#06060a; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.wrap { max-width:560px; margin:0 auto; padding:32px 16px; }
+.card { background:#0a0a14; border:1px solid rgba(255,255,255,0.08); border-radius:24px; overflow:hidden; }
+.header { background:linear-gradient(135deg,#0a0a14 0%,#1a1a2a 100%); padding:32px 32px 24px; border-bottom:1px solid rgba(255,255,255,0.06); position:relative; }
+.logo-row { display:flex; align-items:center; gap:8px; margin-bottom:20px; }
+.logo-box { width:32px; height:32px; background:#ffffff; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
+.logo-text { color:#fff; font-size:14px; font-weight:500; vertical-align:middle; margin-left:4px; }
+.muted { color:#71717a; }
+.topic-pill { display:inline-block; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); color:#fde68a; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; padding:4px 10px; border-radius:99px; }
+h1 { color:#fff; font-size:22px; font-weight:500; margin:12px 0 4px; letter-spacing:-0.01em; }
+.subtitle { color:#a1a1aa; font-size:13px; margin:0; }
+.body { padding:24px 32px; }
+.field { padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.field:last-child { border:none; }
+.label { color:#71717a; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:6px; }
+.value { color:#fafafa; font-size:14px; line-height:1.5; word-wrap:break-word; }
+.email-link { color:#22d3ee; text-decoration:none; }
+.message-box { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:16px; color:#e4e4e7; font-size:14px; line-height:1.6; white-space:pre-wrap; }
+.footer { background:rgba(255,255,255,0.02); padding:20px 32px; text-align:center; border-top:1px solid rgba(255,255,255,0.06); }
+.footer-text { color:#52525b; font-size:11px; margin:0; }
+.footer-link { color:#a1a1aa; text-decoration:none; }
+.gradient-bar { height:3px; background:linear-gradient(90deg,#fbbf24 0%,#22d3ee 50%,#a78bfa 100%); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="gradient-bar"></div>
+    <div class="header">
+      <div class="logo-row">
+        <span class="logo-box">
+          <svg viewBox="-60 -50 120 100" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M -50 0 C -50 -45, -10 -45, 0 0 C 10 45, 50 45, 50 0" fill="none" stroke="#0a0a14" stroke-width="9" stroke-linecap="round"/>
+            <circle cx="-50" cy="0" r="6" fill="#0a0a14"/>
+            <circle cx="50" cy="0" r="6" fill="#0a0a14"/>
+          </svg>
+        </span>
+        <span class="logo-text">WrapFlow<span class="muted">.tools</span></span>
+      </div>
+      <span class="topic-pill">${topicLabel}</span>
+      <h1>New message from ${name}</h1>
+      <p class="subtitle">Someone reached out via the contact form on wrapflow.site</p>
+    </div>
+    <div class="body">
+      <div class="field">
+        <div class="label">From</div>
+        <div class="value">${name}</div>
+      </div>
+      <div class="field">
+        <div class="label">Email</div>
+        <div class="value"><a href="mailto:${email}" class="email-link">${email}</a></div>
+      </div>
+      <div class="field">
+        <div class="label">Shop</div>
+        <div class="value">${shop}</div>
+      </div>
+      <div class="field">
+        <div class="label">Topic</div>
+        <div class="value">${topicLabel}</div>
+      </div>
+      <div class="field">
+        <div class="label">Message</div>
+        <div class="message-box">${message}</div>
+      </div>
+    </div>
+    <div class="footer">
+      <p class="footer-text">Sent from <a href="https://wrapflow.site" class="footer-link">wrapflow.site</a> · Powered by WrapFlow.tools</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+  
+  formData.append("html", htmlBody);
+
+  try {
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    if (data.success) {
+      setStatus("success");
+      (e.target as HTMLFormElement).reset();
+    } else {
+      setStatus("error");
+      setErrorMsg(data.message || "Something went wrong");
+    }
+  } catch {
+    setStatus("error");
+    setErrorMsg("Network error. Please try again.");
+  }
+};
 
   return (
     <main className="relative min-h-screen bg-[#06060a] text-zinc-100">
