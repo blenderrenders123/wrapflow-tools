@@ -16,7 +16,7 @@ export default function ContactPage() {
     setErrorMsg("");
 
     const formData = new FormData(e.currentTarget);
-    formData.append("access_key", "PASTE_YOUR_KEY_HERE");
+    formData.append("access_key", "539f1512-6f42-46cf-9fd3-d0bf311e86c6");
     formData.append("subject", `WrapFlow [${topic}]: ${formData.get("name")}`);
 
     try {
