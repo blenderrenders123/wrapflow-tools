@@ -13,5 +13,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
     { url: `${baseUrl}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/blog/vehicle-wrap-cost-2026`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/vehicle-wrap-vs-paint`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

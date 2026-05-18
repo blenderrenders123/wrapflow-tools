@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "vehicle-wrap-vs-paint",
+    title: "Vehicle wrap vs paint: which one wins?",
+    excerpt: "Full comparison of cost, longevity, reversibility, and use cases. Plus when each option actually makes sense.",
+    date: "May 17, 2026",
+    readTime: "9 min read",
+    category: "Comparison",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
     slug: "vehicle-wrap-cost-2026",
     title: "How much does a vehicle wrap cost in 2026?",
     excerpt: "A complete breakdown of vehicle wrap pricing — what drives cost, what shops charge, and how to estimate any job.",
