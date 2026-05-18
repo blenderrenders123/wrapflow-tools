@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "how-long-does-a-wrap-last",
+    title: "How long does a vehicle wrap actually last?",
+    excerpt: "Real lifespan numbers by vinyl type, finish, and climate. Plus warning signs your wrap is failing and when to repair vs replace.",
+    date: "May 18, 2026",
+    readTime: "7 min read",
+    category: "Materials",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
     slug: "vehicle-wrap-vs-paint",
     title: "Vehicle wrap vs paint: which one wins?",
     excerpt: "Full comparison of cost, longevity, reversibility, and use cases. Plus when each option actually makes sense.",
