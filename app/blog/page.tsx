@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "quoted-too-low-lost-money",
+    title: "I quoted a wrap too low and lost $2,000. Here's the fix.",
+    excerpt: "Why new wrap shops underquote jobs and the exact 5-factor formula that prevents it. Plus how to recover when you've already lost.",
+    date: "May 19, 2026",
+    readTime: "6 min read",
+    category: "Business",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
+    slug: "wheels-rub-after-install",
+    title: "My wheels rub after install. Here's why.",
+    excerpt: "Diagnose where it's rubbing, what caused it, and how to fix each scenario. Plus how to prevent it before buying wheels.",
+    date: "May 19, 2026",
+    readTime: "6 min read",
+    category: "Troubleshooting",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
     slug: "how-long-does-a-wrap-last",
     title: "How long does a vehicle wrap actually last?",
     excerpt: "Real lifespan numbers by vinyl type, finish, and climate. Plus warning signs your wrap is failing and when to repair vs replace.",
