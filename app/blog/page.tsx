@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "missed-install-deadline",
+    title: "I promised a wrap in 2 days. It took 5.",
+    excerpt: "Why wrap jobs blow past schedule, the phases people forget to plan, and how to build a timeline that actually holds.",
+    date: "May 20, 2026",
+    readTime: "6 min read",
+    category: "Workflow",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
+    slug: "ran-out-of-vinyl-mid-job",
+    title: "I ran out of vinyl mid-wrap.",
+    excerpt: "Why installers underbuy film, the batch-number trap, and how to calculate exactly how much vinyl to order with waste factor.",
+    date: "May 20, 2026",
+    readTime: "6 min read",
+    category: "Materials",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
     slug: "quoted-too-low-lost-money",
     title: "I quoted a wrap too low and lost $2,000. Here's the fix.",
     excerpt: "Why new wrap shops underquote jobs and the exact 5-factor formula that prevents it. Plus how to recover when you've already lost.",
