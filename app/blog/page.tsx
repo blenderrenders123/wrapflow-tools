@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "client-says-quote-too-high",
+    title: "\"Your quote is too high.\" How to respond.",
+    excerpt: "Why clients push back on wrap pricing and how to defend a fair quote with a transparent breakdown instead of caving on price.",
+    date: "May 21, 2026",
+    readTime: "6 min read",
+    category: "Business",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
+    slug: "wrap-bubbling-lifting",
+    title: "My wrap is bubbling and lifting after a week.",
+    excerpt: "The four real causes of early wrap failure — bad prep, no post-heat, trapped moisture, over-stretching — and how to prevent each one.",
+    date: "May 21, 2026",
+    readTime: "7 min read",
+    category: "Troubleshooting",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
     slug: "missed-install-deadline",
     title: "I promised a wrap in 2 days. It took 5.",
     excerpt: "Why wrap jobs blow past schedule, the phases people forget to plan, and how to build a timeline that actually holds.",
