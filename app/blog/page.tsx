@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "spacers-vs-new-wheels",
+    title: "Spacers vs new wheels: which do you need?",
+    excerpt: "When wheel spacers fix your fitment problem and when you need different wheels entirely. Costs, safety, and how to check before buying.",
+    date: "May 22, 2026",
+    readTime: "7 min read",
+    category: "Fitment",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
+    slug: "ppf-vs-vinyl-pricing",
+    title: "PPF vs vinyl: how to price each one",
+    excerpt: "Why PPF costs 2-3x more than vinyl, how to quote each job profitably, and what to tell clients deciding between protection and style.",
+    date: "May 22, 2026",
+    readTime: "7 min read",
+    category: "Pricing",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
     slug: "client-says-quote-too-high",
     title: "\"Your quote is too high.\" How to respond.",
     excerpt: "Why clients push back on wrap pricing and how to defend a fair quote with a transparent breakdown instead of caving on price.",
