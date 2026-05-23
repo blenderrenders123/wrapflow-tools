@@ -23,5 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/wrap-bubbling-lifting`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/spacers-vs-new-wheels`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/ppf-vs-vinyl-pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/how-a-car-gets-wrapped`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

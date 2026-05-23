@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "how-a-car-gets-wrapped",
+    title: "How a car gets wrapped: the full process explained",
+    excerpt: "Every step of a professional vehicle wrap — from surface prep and panel disassembly to squeegee technique, post-heating, and final trim.",
+    date: "May 23, 2026",
+    readTime: "8 min read",
+    category: "Guide",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
     slug: "spacers-vs-new-wheels",
     title: "Spacers vs new wheels: which do you need?",
     excerpt: "When wheel spacers fix your fitment problem and when you need different wheels entirely. Costs, safety, and how to check before buying.",
