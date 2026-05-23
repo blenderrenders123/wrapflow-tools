@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "diy-vs-professional-wrap",
+    title: "Can you wrap a car yourself? DIY vs professional",
+    excerpt: "Real cost comparison, common DIY mistakes, what's actually doable at home, and when to hire a shop. Honest breakdown with video.",
+    date: "May 23, 2026",
+    readTime: "9 min read",
+    category: "Guide",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
     slug: "how-a-car-gets-wrapped",
     title: "How a car gets wrapped: the full process explained",
     excerpt: "Every step of a professional vehicle wrap — from surface prep and panel disassembly to squeegee technique, post-heating, and final trim.",
