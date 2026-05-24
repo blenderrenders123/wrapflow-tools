@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "wrap-removal-damaged-paint",
+    title: "\"Wrap removal pulled my paint off.\"",
+    excerpt: "Why wrap removal sometimes damages paint, which cars are high-risk, and the safe low-and-slow method that protects the surface underneath.",
+    date: "May 24, 2026",
+    readTime: "7 min read",
+    category: "Troubleshooting",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
+    slug: "wrinkles-on-bumpers",
+    title: "I keep getting wrinkles on bumpers.",
+    excerpt: "Why vinyl wrinkles on curved bumpers and the heat-and-stretch technique, relief cuts, and prep that give a clean finish every time.",
+    date: "May 24, 2026",
+    readTime: "6 min read",
+    category: "Technique",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
     slug: "diy-vs-professional-wrap",
     title: "Can you wrap a car yourself? DIY vs professional",
     excerpt: "Real cost comparison, common DIY mistakes, what's actually doable at home, and when to hire a shop. Honest breakdown with video.",

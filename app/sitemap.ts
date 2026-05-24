@@ -25,5 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/ppf-vs-vinyl-pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/how-a-car-gets-wrapped`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/diy-vs-professional-wrap`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/wrap-removal-damaged-paint`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/wrinkles-on-bumpers`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }
