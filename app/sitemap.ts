@@ -27,5 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/diy-vs-professional-wrap`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/wrap-removal-damaged-paint`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/wrinkles-on-bumpers`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/stunning-wrap-transformations`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/chrome-color-shift-wraps`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

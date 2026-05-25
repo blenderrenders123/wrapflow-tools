@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "stunning-wrap-transformations",
+    title: "10 stunning wrap transformations",
+    excerpt: "Drag-to-compare before & after wrap transformations showing what's possible with vinyl — color changes, finishes, and full makeovers.",
+    date: "May 25, 2026",
+    readTime: "6 min read",
+    category: "Inspiration",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
+    slug: "chrome-color-shift-wraps",
+    title: "Chrome & color-shift wraps explained",
+    excerpt: "What chrome and color-shift vinyl really costs, how long it lasts, why it's harder to install, and whether it's worth it. With photos and video.",
+    date: "May 25, 2026",
+    readTime: "7 min read",
+    category: "Materials",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
     slug: "wrap-removal-damaged-paint",
     title: "\"Wrap removal pulled my paint off.\"",
     excerpt: "Why wrap removal sometimes damages paint, which cars are high-risk, and the safe low-and-slow method that protects the surface underneath.",
