@@ -125,11 +125,6 @@ export default function BlogPost() {
           <p className="leading-relaxed">
             For businesses, a wrap isn&apos;t vanity — it&apos;s advertising that works 24/7. A plain white work van becomes brand visibility on every road it drives.
           </p>
-          <BeforeAfter
-            beforeSrc="https://images.unsplash.com/photo-1606618303108-bb9e2c0c4a3d?w=1200&q=80"
-            afterSrc="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&q=80"
-            caption="A blank van becomes a mobile advertisement."
-          />
 
           <div className="my-12 rounded-2xl bg-gradient-to-br from-violet-400/40 via-violet-400/10 to-white/10 p-px">
             <div className="rounded-2xl bg-[#0a0a12]/80 p-6 sm:p-8">
