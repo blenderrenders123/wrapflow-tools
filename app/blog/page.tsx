@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "best-wrap-colors-2026",
+    title: "Best car wrap colors in 2026",
+    excerpt: "Top wrap color trends and finishes for 2026 — satin, color-shift, tactical earth tones, nardo gray — with photos, video, and what each costs.",
+    date: "May 26, 2026",
+    readTime: "8 min read",
+    category: "Trends",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
+    slug: "cost-to-wrap-truck-suv",
+    title: "What does it cost to wrap a truck or SUV?",
+    excerpt: "Real 2026 truck and SUV wrap pricing — full and partial, material needs by size, what drives cost, and how to estimate your own job.",
+    date: "May 26, 2026",
+    readTime: "7 min read",
+    category: "Pricing",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
     slug: "stunning-wrap-transformations",
     title: "10 stunning wrap transformations",
     excerpt: "Drag-to-compare before & after wrap transformations showing what's possible with vinyl — color changes, finishes, and full makeovers.",

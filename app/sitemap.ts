@@ -29,5 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/wrinkles-on-bumpers`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/stunning-wrap-transformations`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/chrome-color-shift-wraps`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/best-wrap-colors-2026`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/cost-to-wrap-truck-suv`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }
