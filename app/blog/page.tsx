@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "is-wrapping-worth-it",
+    title: "Is wrapping worth it vs paint? (interactive)",
+    excerpt: "Use the built-in calculator to compare wrap vs paint based on your car's value, how long you'll keep it, and finish — and see which actually saves money.",
+    date: "May 27, 2026",
+    readTime: "6 min read",
+    category: "Interactive",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
+    slug: "tesla-model-3-wrap-cost-breakdown",
+    title: "The real cost of wrapping a Tesla Model 3",
+    excerpt: "A hyper-detailed, line-by-line cost breakdown of wrapping a Model 3 — material, labor, complexity, total — and the quirks that make this car wrap the way it does.",
+    date: "May 27, 2026",
+    readTime: "7 min read",
+    category: "Case Study",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
     slug: "best-wrap-colors-2026",
     title: "Best car wrap colors in 2026",
     excerpt: "Top wrap color trends and finishes for 2026 — satin, color-shift, tactical earth tones, nardo gray — with photos, video, and what each costs.",

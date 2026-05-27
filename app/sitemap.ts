@@ -31,5 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/chrome-color-shift-wraps`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/best-wrap-colors-2026`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/cost-to-wrap-truck-suv`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/is-wrapping-worth-it`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/tesla-model-3-wrap-cost-breakdown`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }
