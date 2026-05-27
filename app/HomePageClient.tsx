@@ -144,7 +144,7 @@ export default function HomePageClient() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white">
               <LogoMark />
             </div>
-            <span className="text-[15px] font-medium">WrapFlow<span className="text-zinc-400">.tools</span></span>
+            <span className="text-[15px] font-medium">wrapflow<span className="text-zinc-400">.site</span></span>
           </Link>
           <ul className="hidden items-center gap-8 md:flex">
             {["Tools", "How", "FAQ"].map((item) => (
