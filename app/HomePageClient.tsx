@@ -144,7 +144,7 @@ export default function HomePageClient() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white">
               <LogoMark />
             </div>
-            <span className="text-[15px] font-medium">wrapflow<span className="text-zinc-400">.site</span></span>
+            <span className="text-[15px] font-medium">WrapFlow<span className="text-zinc-400">.site</span></span>
           </Link>
           <ul className="hidden items-center gap-8 md:flex">
             {["Tools", "How", "FAQ"].map((item) => (
@@ -279,7 +279,7 @@ export default function HomePageClient() {
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={staggerContainer} className="mb-12 text-center">
           <motion.p variants={fadeUp} className="bg-gradient-to-r from-amber-400 via-cyan-400 to-violet-400 bg-clip-text text-xs font-medium uppercase tracking-[0.25em] text-transparent">Early access</motion.p>
           <motion.h2 variants={fadeUp} className="mt-2 text-3xl font-medium tracking-tight text-white sm:text-4xl">Be one of the first</motion.h2>
-          <motion.p variants={fadeUp} className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">WrapFlow.tools just launched. Try the toolkit and become a founding user — your feedback shapes what gets built next.</motion.p>
+          <motion.p variants={fadeUp} className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">WrapFlow.site just launched. Try the toolkit and become a founding user — your feedback shapes what gets built next.</motion.p>
         </motion.div>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={staggerContainer} className="grid gap-5 md:grid-cols-3">
           {[
@@ -326,7 +326,7 @@ export default function HomePageClient() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
                   <LogoMark />
                 </div>
-                <span className="text-sm font-medium">WrapFlow<span className="text-zinc-400">.tools</span></span>
+                <span className="text-sm font-medium">WrapFlow<span className="text-zinc-400">.site</span></span>
               </Link>
               <p className="mt-3 max-w-xs text-xs text-zinc-500">Precision calculators for wrap, tint, and PPF pros.</p>
             </div>
@@ -347,7 +347,7 @@ export default function HomePageClient() {
             </nav>
           </motion.div>
           <motion.div variants={fadeUp} className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/5 pt-6 text-xs text-zinc-500 sm:flex-row sm:items-center">
-            <p>© 2026 WrapFlow.tools — All rights reserved.</p>
+            <p>© 2026 WrapFlow.site — All rights reserved.</p>
             <p>Built for the shop floor.</p>
           </motion.div>
         </motion.div>
