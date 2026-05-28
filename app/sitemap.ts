@@ -33,5 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/cost-to-wrap-truck-suv`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/is-wrapping-worth-it`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/tesla-model-3-wrap-cost-breakdown`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/starting-a-wrap-business`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/vinyl-brand-comparison`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

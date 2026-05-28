@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "starting-a-wrap-business",
+    title: "How to start a vehicle wrap business in 2026",
+    excerpt: "The complete guide — startup costs, equipment, training, workspace, pricing, finding clients, and the mistakes that sink most new shops in year one.",
+    date: "May 28, 2026",
+    readTime: "12 min read",
+    category: "Business",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
+    slug: "vinyl-brand-comparison",
+    title: "3M vs Avery vs KPMF vs Hexis: the full comparison",
+    excerpt: "An in-depth comparison of the four major vinyl wrap brands — durability, warranty, color range, install feel, and which one to choose for your job.",
+    date: "May 28, 2026",
+    readTime: "11 min read",
+    category: "Materials",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
     slug: "is-wrapping-worth-it",
     title: "Is wrapping worth it vs paint? (interactive)",
     excerpt: "Use the built-in calculator to compare wrap vs paint based on your car's value, how long you'll keep it, and finish — and see which actually saves money.",
