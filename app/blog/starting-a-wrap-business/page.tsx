@@ -58,7 +58,7 @@ export default function BlogPost() {
         <figure className="mb-10">
           <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
             <Image
-              src="https://images.unsplash.com/photo-1632823471565-1ecdf5c6d7f9?w=1200&q=80"
+              src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1200&q=80"
               alt="A vehicle wrap shop workspace"
               fill
               className="object-cover"
