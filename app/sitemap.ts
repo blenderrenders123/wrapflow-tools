@@ -35,5 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/tesla-model-3-wrap-cost-breakdown`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/starting-a-wrap-business`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/vinyl-brand-comparison`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/why-your-wrap-lifted-in-6-months`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/throwing-away-vinyl-money`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

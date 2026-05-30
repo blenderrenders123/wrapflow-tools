@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "motion/react";
-import { Calculator, Ruler, Clock, Layers, ArrowRight, Gauge, ShieldCheck, MousePointerClick, Settings, Download, Plus, Minus, Star } from "lucide-react";
+import { Calculator, Ruler, Clock, Layers, ArrowRight, Gauge, ShieldCheck, MousePointerClick, Settings, Download, Plus, Minus, Star, ShieldHalf, Shapes, CalendarDays, TrendingUp } from "lucide-react";
 
 const tools = [
   {
@@ -58,10 +58,62 @@ const tools = [
     tagColor: "text-emerald-300",
     arrowColor: "text-emerald-400",
   },
+  {
+    slug: "wrap-lifespan-predictor",
+    title: "Wrap Lifespan Predictor",
+    description: "Estimate how long a wrap will last based on climate, exposure, usage, and material grade.",
+    icon: ShieldHalf,
+    tag: "Predictor",
+    gradient: "from-rose-200 via-rose-400 to-rose-600",
+    gradientBorder: "from-rose-400/50 via-rose-400/5 to-white/10",
+    glow: "bg-rose-400/22",
+    textGradient: "from-rose-200 to-rose-400",
+    tagColor: "text-rose-300",
+    arrowColor: "text-rose-400",
+  },
+  {
+    slug: "ppf-coverage-visualizer",
+    title: "PPF Coverage Visualizer",
+    description: "Map out paint protection zones. Compare partial vs track packages with instant coverage totals.",
+    icon: Shapes,
+    tag: "Visualizer",
+    gradient: "from-orange-200 via-orange-400 to-orange-600",
+    gradientBorder: "from-orange-400/50 via-orange-400/5 to-white/10",
+    glow: "bg-orange-400/22",
+    textGradient: "from-orange-200 to-orange-400",
+    tagColor: "text-orange-300",
+    arrowColor: "text-orange-400",
+  },
+  {
+    slug: "wrap-care-schedule-generator",
+    title: "Wrap Care Schedule Generator",
+    description: "Personalized wash, inspection, and decon dates. Export as PDF or import to your calendar.",
+    icon: CalendarDays,
+    tag: "Scheduler",
+    gradient: "from-teal-200 via-teal-400 to-teal-600",
+    gradientBorder: "from-teal-400/50 via-teal-400/5 to-white/10",
+    glow: "bg-teal-400/22",
+    textGradient: "from-teal-200 to-teal-400",
+    tagColor: "text-teal-300",
+    arrowColor: "text-teal-400",
+  },
+  {
+    slug: "vinyl-waste-roi-calculator",
+    title: "Vinyl Waste & ROI Calculator",
+    description: "See annual scrap losses and calculate payback periods on plotters, laminators, and other gear.",
+    icon: TrendingUp,
+    tag: "Profit",
+    gradient: "from-yellow-200 via-yellow-400 to-yellow-600",
+    gradientBorder: "from-yellow-400/50 via-yellow-400/5 to-white/10",
+    glow: "bg-yellow-400/22",
+    textGradient: "from-yellow-200 to-yellow-400",
+    tagColor: "text-yellow-300",
+    arrowColor: "text-yellow-400",
+  },
 ];
 
 const howItWorks = [
-  { icon: MousePointerClick, title: "Pick your tool", desc: "Choose from 4 specialized calculators built for installers.", color: "from-amber-400 to-amber-600" },
+  { icon: MousePointerClick, title: "Pick your tool", desc: "Choose from 8 specialized calculators built for installers.", color: "from-amber-400 to-amber-600" },
   { icon: Settings, title: "Adjust inputs", desc: "Drag sliders, pick presets, customize for your exact job.", color: "from-cyan-400 to-cyan-600" },
   { icon: Download, title: "Export or share", desc: "Copy as text or download a client-ready PDF instantly.", color: "from-violet-400 to-violet-600" },
 ];
@@ -135,6 +187,8 @@ export default function HomePageClient() {
         <div className="absolute top-[200px] right-[5%] h-[450px] w-[450px] rounded-full bg-cyan-400/20 blur-[120px]" />
         <div className="absolute top-[700px] left-0 h-[400px] w-[400px] rounded-full bg-violet-400/18 blur-[120px]" />
         <div className="absolute top-[1100px] right-[20%] h-[400px] w-[400px] rounded-full bg-emerald-400/15 blur-[120px]" />
+        <div className="absolute top-[1500px] left-[15%] h-[400px] w-[400px] rounded-full bg-rose-400/15 blur-[120px]" />
+        <div className="absolute top-[1900px] right-[10%] h-[400px] w-[400px] rounded-full bg-teal-400/15 blur-[120px]" />
         <div className="absolute inset-0 opacity-[0.025]" style={{ backgroundImage: "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)", backgroundSize: "56px 56px" }} />
       </div>
 
@@ -201,7 +255,7 @@ export default function HomePageClient() {
           </motion.div>
 
           <motion.div variants={fadeUp} className="mx-auto mt-16 grid max-w-xl grid-cols-3 gap-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl">
-            <Stat icon={Gauge} value="4" label="Free tools" color="text-amber-400" />
+            <Stat icon={Gauge} value="8" label="Free tools" color="text-amber-400" />
             <Stat icon={ShieldCheck} value="No API" label="Offline-ready" color="text-cyan-400" divided />
             <Stat icon={Star} value="$0" label="Forever free" color="text-violet-400" />
           </motion.div>
@@ -241,7 +295,7 @@ export default function HomePageClient() {
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={staggerContainer} className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <motion.div variants={fadeUp}>
             <p className="bg-gradient-to-r from-amber-400 via-cyan-400 to-violet-400 bg-clip-text text-xs font-medium uppercase tracking-[0.25em] text-transparent">The toolkit</p>
-            <h2 className="mt-2 text-3xl font-medium tracking-tight text-white sm:text-4xl">Four tools. Zero friction.</h2>
+            <h2 className="mt-2 text-3xl font-medium tracking-tight text-white sm:text-4xl">Eight tools. Zero friction.</h2>
           </motion.div>
           <motion.p variants={fadeUp} className="max-w-md text-sm text-zinc-400">Each tool runs entirely in your browser.</motion.p>
         </motion.div>

@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "why-your-wrap-lifted-in-6-months",
+    title: "Why your wrap lifted in 6 months (and how to predict it next time)",
+    excerpt: "The 6 real reasons vehicle wraps fail early — bad prep, low-grade vinyl, sharp edges, premature washing, climate, and installer error.",
+    date: "May 30, 2026",
+    readTime: "8 min read",
+    category: "Troubleshooting",
+    categoryColor: "text-rose-300 border-rose-400/30 bg-rose-400/10",
+  },
+  {
+    slug: "throwing-away-vinyl-money",
+    title: "You're throwing away $4,000 of vinyl a year. Here's the math.",
+    excerpt: "How much money the average wrap shop loses to vinyl scrap each year, the four biggest sources of waste, and what to actually do about it.",
+    date: "May 30, 2026",
+    readTime: "7 min read",
+    category: "Shop economics",
+    categoryColor: "text-yellow-300 border-yellow-400/30 bg-yellow-400/10",
+  },
+  {
     slug: "starting-a-wrap-business",
     title: "How to start a vehicle wrap business in 2026",
     excerpt: "The complete guide — startup costs, equipment, training, workspace, pricing, finding clients, and the mistakes that sink most new shops in year one.",
