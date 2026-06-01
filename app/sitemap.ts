@@ -37,5 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/vinyl-brand-comparison`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/why-your-wrap-lifted-in-6-months`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/throwing-away-vinyl-money`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/how-much-ppf-do-you-need`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/easy-wrap-care-routine`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

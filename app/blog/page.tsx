@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "how-much-ppf-do-you-need",
+    title: "How much PPF do you actually need? A friendly guide to coverage",
+    excerpt: "Confused about partial vs full PPF coverage? Here's a friendly, no-jargon walkthrough of which areas of your car actually need paint protection film — and which don't.",
+    date: "May 31, 2026",
+    readTime: "7 min read",
+    category: "PPF guide",
+    categoryColor: "text-orange-300 border-orange-400/30 bg-orange-400/10",
+  },
+  {
+    slug: "easy-wrap-care-routine",
+    title: "Your new wrap, made simple: the easy care routine",
+    excerpt: "Just got a vehicle wrap? Here's a friendly, no-stress guide to keeping it looking new for years — what to do, what to skip, and how often.",
+    date: "May 31, 2026",
+    readTime: "6 min read",
+    category: "Care guide",
+    categoryColor: "text-teal-300 border-teal-400/30 bg-teal-400/10",
+  },
+  {
     slug: "why-your-wrap-lifted-in-6-months",
     title: "Why your wrap lifted in 6 months (and how to predict it next time)",
     excerpt: "The 6 real reasons vehicle wraps fail early — bad prep, low-grade vinyl, sharp edges, premature washing, climate, and installer error.",
