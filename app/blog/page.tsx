@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "why-your-wrap-color-faded",
+    title: "Why did your wrap color fade? Real causes and how to slow it down",
+    excerpt: "Wrap looking dull or color-shifted after a year or two? Here are the 5 actual causes of premature fading — UV, sealant choice, heat cycles, pollutants, and color — plus how to slow each one down.",
+    date: "June 1, 2026",
+    readTime: "8 min read",
+    category: "Troubleshooting",
+    categoryColor: "text-rose-300 border-rose-400/30 bg-rose-400/10",
+  },
+  {
+    slug: "plotter-vs-outsourcing",
+    title: "Plotter vs outsourcing: when the math actually works in your favor",
+    excerpt: "Should your wrap shop buy a plotter or keep outsourcing cuts? A real cost breakdown with the volume threshold where buying makes sense — and when outsourcing is still the smarter play.",
+    date: "June 1, 2026",
+    readTime: "8 min read",
+    category: "Shop economics",
+    categoryColor: "text-yellow-300 border-yellow-400/30 bg-yellow-400/10",
+  },
+  {
     slug: "how-much-ppf-do-you-need",
     title: "How much PPF do you actually need? A friendly guide to coverage",
     excerpt: "Confused about partial vs full PPF coverage? Here's a friendly, no-jargon walkthrough of which areas of your car actually need paint protection film — and which don't.",
