@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "how-long-does-a-wrap-take",
+    title: "How long does a wrap really take? A day-by-day timeline",
+    excerpt: "The real timeline for a vehicle wrap install — from drop-off to drive-away. Hour-by-hour breakdown for partial, full, and complex wraps, plus what slows the job down.",
+    date: "June 2, 2026",
+    readTime: "7 min read",
+    category: "Planning",
+    categoryColor: "text-violet-300 border-violet-400/30 bg-violet-400/10",
+  },
+  {
+    slug: "how-much-vinyl-do-you-need",
+    title: "How much vinyl do you need? A panel-by-panel guide",
+    excerpt: "How many linear meters of vinyl wrap does your vehicle actually need? Panel-by-panel breakdown by vehicle type, with finish multipliers and waste factor math.",
+    date: "June 2, 2026",
+    readTime: "7 min read",
+    category: "Materials",
+    categoryColor: "text-emerald-300 border-emerald-400/30 bg-emerald-400/10",
+  },
+  {
     slug: "why-your-wrap-color-faded",
     title: "Why did your wrap color fade? Real causes and how to slow it down",
     excerpt: "Wrap looking dull or color-shifted after a year or two? Here are the 5 actual causes of premature fading — UV, sealant choice, heat cycles, pollutants, and color — plus how to slow each one down.",
