@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "is-ppf-worth-it",
+    title: "Is PPF worth it? Real damage costs vs real protection",
+    excerpt: "Paint protection film costs $1,500 to $9,000. What does it actually save you? A real cost breakdown of paint repairs, headlight replacement, and resale value vs. the PPF investment.",
+    date: "June 3, 2026",
+    readTime: "8 min read",
+    category: "Buyer's guide",
+    categoryColor: "text-orange-300 border-orange-400/30 bg-orange-400/10",
+  },
+  {
+    slug: "winter-wrap-care",
+    title: "Winter wrap care: surviving salt, snow & cold",
+    excerpt: "Winter is the harshest season on vehicle wraps. Road salt, freezing temps, and heat shock can age a wrap years in months. Here's how to protect your wrap through winter.",
+    date: "June 3, 2026",
+    readTime: "7 min read",
+    category: "Seasonal care",
+    categoryColor: "text-teal-300 border-teal-400/30 bg-teal-400/10",
+  },
+  {
     slug: "how-long-does-a-wrap-take",
     title: "How long does a wrap really take? A day-by-day timeline",
     excerpt: "The real timeline for a vehicle wrap install — from drop-off to drive-away. Hour-by-hour breakdown for partial, full, and complex wraps, plus what slows the job down.",
