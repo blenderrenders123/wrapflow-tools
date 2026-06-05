@@ -45,5 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog/how-much-vinyl-do-you-need`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/is-ppf-worth-it`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/blog/winter-wrap-care`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/wheel-offset-explained`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/blog/why-wrap-quotes-vary`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 }

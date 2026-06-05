@@ -9,6 +9,24 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "wheel-offset-explained",
+    title: "Wheel offset explained: the 3 numbers every buyer needs to know",
+    excerpt: "Offset, backspacing, bolt pattern — what each one actually means, how they affect fitment, and how to read a wheel spec without guessing. A plain-English guide for anyone buying aftermarket wheels.",
+    date: "June 4, 2026",
+    readTime: "8 min read",
+    category: "Wheel guide",
+    categoryColor: "text-cyan-300 border-cyan-400/30 bg-cyan-400/10",
+  },
+  {
+    slug: "why-wrap-quotes-vary",
+    title: "Why wrap quotes vary so much (and how to spot a fair one)",
+    excerpt: "Same car, three quotes — $3,000, $5,500, and $8,000. What explains the gap? A breakdown of the 5 factors that drive wrap pricing and how to tell which shop is actually a good deal.",
+    date: "June 4, 2026",
+    readTime: "8 min read",
+    category: "Pricing",
+    categoryColor: "text-amber-300 border-amber-400/30 bg-amber-400/10",
+  },
+  {
     slug: "is-ppf-worth-it",
     title: "Is PPF worth it? Real damage costs vs real protection",
     excerpt: "Paint protection film costs $1,500 to $9,000. What does it actually save you? A real cost breakdown of paint repairs, headlight replacement, and resale value vs. the PPF investment.",
